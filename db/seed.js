@@ -1,10 +1,16 @@
 const {
     client,
     getAllUser,
+    getAllPosts,
     createUser,
     updateUser,
+    createPost,
+    updatePost,
+    
 
 } = require('./index');
+
+
 
 async function createInitinalUser() {
     try {
@@ -21,15 +27,26 @@ async function createInitinalUser() {
     }
 }
 
+
+
+async function createInitinalPosts(){
+    try{
+        console.log('beginning to create posts...');
+        const postOne = await createPost({authorId:1,title:'my first post',content:'this is my first post'})
+        console.log(postOne)
+    }catch(error){
+        console.error(error)
+    }
+}
+
+
+
 async function dropTables() {
     try {
-        console.log('starting to drop tables...')
 
+        console.log('starting to drop tables...')
         await client.query(`DROP TABLE IF EXISTS posts`);
         await client.query(`DROP TABLE IF EXISTS users`);
-
-
-
         console.log('table dropped');
 
     } catch (error) {
@@ -37,6 +54,9 @@ async function dropTables() {
         throw error;
     }
 };
+
+
+
 async function makePostTabel() {
     try {
         console.log('beginning to build post table...')
@@ -88,6 +108,7 @@ async function rebuildDb() {
         await makeTable();
         await makePostTabel()
         await createInitinalUser();
+        await createInitinalPosts()
     } catch (error) {
         throw error;
     }
@@ -96,18 +117,35 @@ async function rebuildDb() {
 async function testDB() {
     try {
         console.log('starting to test database..')
-
         const users = await getAllUser();
-
         console.log("getAllUser:", users);
-        console.log('begin update...')
+
+
+        console.log('begin update USER...')
         const updateUserResult = await updateUser(users[0].id, {
             name: 'Danny',
             location: 'Long Island'
-        })
-        console.log('updateUser', updateUserResult)
+        });
+        console.log('updateUser', updateUserResult);
+        console.log('finished USER update!');
 
-        console.log('finished update!');
+
+        console.log('getting all POSTS...');
+        const posts = await getAllPosts();
+        console.log('POSTS',posts);
+        console.log('finished getting POSTS');
+
+        console.log('trying to update POST')
+        const updatedPostResult = await updatePost(posts[0].id,{
+            authorId:1,
+            title:'just kidding not first',
+            content:'i was just kidding this was not my first post',
+            active : false 
+        })
+        console.log('updated POST',updatedPostResult);
+        console.log('finished updating POST');
+
+        
 
         console.log('DB test complete!');
 

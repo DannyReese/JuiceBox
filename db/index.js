@@ -15,6 +15,15 @@ const getAllUser = async () => {
     }
 };
 
+async function getAllPosts(){
+    try{
+        const { rows } = await client.query(`SELECT * FROM posts;`);
+        return rows;
+    }catch(error){
+        console.error(error)
+    }
+};
+
 async function createUser(
     { username,
         password,
@@ -42,8 +51,13 @@ async function createPost({
     content
 }) {
     try {
-
+        const result = await client.query(`
+        INSERT INTO posts("authorId",title,content)
+        VALUES($1,$2,$3)
+        RETURNING *;`, [authorId, title, content])
+        return result.rows
     } catch (error) {
+        console.error("couldn't create post")
         throw error;
     }
 }
@@ -67,10 +81,31 @@ async function updateUser(id, fields = {}) {
     }
 }
 
+async function updatePost(id, fields = {}) {
+    const setString = Object.keys(fields).map((key, index) =>`"${key}"=$${index + 1}`).join(', ')
+    if (setString.length === 0) {
+        return
+    }
+    try {
+        const result = await client.query(`
+        UPDATE posts
+        SET ${setString}
+        WHERE id=${id}
+        RETURNING *;`, Object.values(fields));
+        return result.rows
+    } catch (error) {
+        console.error('idk')
+        throw error
+    }
+}
+
 
 module.exports = {
     client,
     getAllUser,
+    getAllPosts,
     createUser,
-    updateUser
+    updateUser,
+    createPost,
+    updatePost
 };

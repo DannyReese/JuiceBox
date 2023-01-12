@@ -36,6 +36,18 @@ async function createUser(
     }
 }
 
+async function createPost({
+    authorId,
+    title,
+    content
+  }) {
+    try {
+  
+    } catch (error) {
+      throw error;
+    }
+  }
+
 async function updateUser(id,fields={}) {
     const setString = Object.keys(fields).map((key, index) => `"${key}"=$${index + 1}`).join(', ')
     if (setString.length === 0) {

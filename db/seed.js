@@ -6,27 +6,28 @@ const {
 
 } = require('./index');
 
-async function createInitinalUser(){
-try{
-    console.log('beginning to create user...');
-     const irma = await createUser({username:'irma22',password:'baby',name:'irma',location:'New York'});
-     const sandra = await createUser({ username: 'sandra',password: 'sandygal',name:'sandy',location:'Hawaii' });
-     const jimmy = await createUser({username:'jimmy',password:'bush',name:'billy',location:'Texas'});
-     const result = [irma,sandra,jimmy]
-    console.log("results",result)
-    console.log('users created')
-}catch(error){
-    console.error('could not creat user sorry');
-    throw error
-}
+async function createInitinalUser() {
+    try {
+        console.log('beginning to create user...');
+        const irma = await createUser({ username: 'irma22', password: 'baby', name: 'irma', location: 'New York' });
+        const sandra = await createUser({ username: 'sandra', password: 'sandygal', name: 'sandy', location: 'Hawaii' });
+        const jimmy = await createUser({ username: 'jimmy', password: 'bush', name: 'billy', location: 'Texas' });
+        const result = [irma, sandra, jimmy]
+        console.log("results", result)
+        console.log('users created')
+    } catch (error) {
+        console.error('could not creat user sorry');
+        throw error
+    }
 }
 
 async function dropTables() {
     try {
         console.log('starting to drop tables...')
+
         await client.query(`DROP TABLE IF EXISTS posts`);
         await client.query(`DROP TABLE IF EXISTS users`);
-       
+
 
 
         console.log('table dropped');
@@ -36,9 +37,10 @@ async function dropTables() {
         throw error;
     }
 };
-async function  makePostTabel(){
-    try{
+async function makePostTabel() {
+    try {
         console.log('beginning to build post table...')
+        
         await client.query(`CREATE TABLE posts(
             id SERIAL PRIMARY KEY,
             "authorId" INTEGER REFERENCES users(id) NOT NULL,
@@ -48,7 +50,7 @@ async function  makePostTabel(){
 
         );`);
         console.log('post table created!')
-    }catch(error){
+    } catch (error) {
         console.error('couldnt create post table');
         throw error;
     }
@@ -99,11 +101,11 @@ async function testDB() {
 
         console.log("getAllUser:", users);
         console.log('begin update...')
-        const updateUserResult = await updateUser(users[0].id,{
-            name:'Danny',
-            location:'Long Island'
+        const updateUserResult = await updateUser(users[0].id, {
+            name: 'Danny',
+            location: 'Long Island'
         })
-        console.log('updateUser',updateUserResult)
+        console.log('updateUser', updateUserResult)
 
         console.log('finished update!');
 

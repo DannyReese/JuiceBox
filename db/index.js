@@ -15,21 +15,36 @@ const getAllUser = async () => {
     }
 };
 
-async function getAllPosts(){
-    try{
+
+async function getAllPosts() {
+    try {
         const { rows } = await client.query(`SELECT * FROM posts;`);
         return rows;
-    }catch(error){
+    } catch (error) {
         console.error(error)
     }
 };
 
-async function createUser(
-    { username,
-        password,
-        name,
-        location
-    }) {
+
+async function getPostsByUser(userId) {
+    try {
+        const { rows } = await client.query(`
+            SELECT * FROM posts 
+            WHERE "authorId"=${userId};`)
+        return rows;
+
+    } catch (error) {
+        console.error(error)
+    }
+};
+
+
+async function createUser({
+    username,
+    password,
+    name,
+    location
+}) {
     try {
         const { rows } = await client.query(`
         INSERT INTO users (username, password,name,location)
@@ -41,9 +56,8 @@ async function createUser(
     } catch (error) {
         console.error("couldn't create this user")
         throw error
-
     }
-}
+};
 
 async function createPost({
     authorId,
@@ -60,7 +74,7 @@ async function createPost({
         console.error("couldn't create post")
         throw error;
     }
-}
+};
 
 async function updateUser(id, fields = {}) {
     const setString = Object.keys(fields).map((key, index) => `"${key}"=$${index + 1}`).join(', ')
@@ -79,7 +93,8 @@ async function updateUser(id, fields = {}) {
         console.error(error);
         throw error;
     }
-}
+};
+
 
 async function updatePost(id, fields = {}) {
     const setString = Object.keys(fields).map((key, index) =>`"${key}"=$${index + 1}`).join(', ')
@@ -87,16 +102,36 @@ async function updatePost(id, fields = {}) {
         return
     }
     try {
-        const result = await client.query(`
+        const { rows: [post] } = await client.query(`
         UPDATE posts
         SET ${setString}
         WHERE id=${id}
         RETURNING *;`, Object.values(fields));
-        return result.rows
+        return post
     } catch (error) {
         console.error('idk')
         throw error
     }
+};
+
+async function getUserById(userId){
+    try{
+    const {rows :[user]} = await client.query(`
+    SELECT id,username,name,location,active 
+    FROM users
+    WHERE id=${userId};`);
+    if(user.length===0){
+        return null;
+    }
+
+user.post = await getPostsByUser(userId)
+
+return user;
+
+}catch(error){
+    console.error(error);
+    throw error
+}
 }
 
 
@@ -107,5 +142,7 @@ module.exports = {
     createUser,
     updateUser,
     createPost,
-    updatePost
+    updatePost,
+    getPostsByUser,
+    getUserById
 };

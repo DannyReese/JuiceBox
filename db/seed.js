@@ -6,8 +6,7 @@ const {
     updateUser,
     createPost,
     updatePost,
-    
-
+    getUserById
 } = require('./index');
 
 
@@ -99,6 +98,7 @@ async function makeTable() {
     }
 };
 
+
 async function rebuildDb() {
     try {
         client.connect();
@@ -114,47 +114,44 @@ async function rebuildDb() {
     }
 }
 
-async function testDB() {
-    try {
-        console.log('starting to test database..')
-        const users = await getAllUser();
-        console.log("getAllUser:", users);
 
-
-        console.log('begin update USER...')
-        const updateUserResult = await updateUser(users[0].id, {
-            name: 'Danny',
-            location: 'Long Island'
-        });
-        console.log('updateUser', updateUserResult);
-        console.log('finished USER update!');
-
-
-        console.log('getting all POSTS...');
-        const posts = await getAllPosts();
-        console.log('POSTS',posts);
-        console.log('finished getting POSTS');
-
-        console.log('trying to update POST')
-        const updatedPostResult = await updatePost(posts[0].id,{
-            authorId:1,
-            title:'just kidding not first',
-            content:'i was just kidding this was not my first post',
-            active : false 
-        })
-        console.log('updated POST',updatedPostResult);
-        console.log('finished updating POST');
-
-        
-
-        console.log('DB test complete!');
-
-    } catch (error) {
-        console.error("error getting database");
-        throw error;
-    }
-}
-
+    async function testDB() {
+        try {
+          console.log("Starting to test database...");
+      
+          console.log("Calling getAllUsers");
+          const users = await getAllUser();
+          console.log("Result:", users);
+      
+          console.log("Calling updateUser on users[0]");
+          const updateUserResult = await updateUser(users[0].id, {
+            name: "Newname Sogood",
+            location: "Lesterville, KY"
+          });
+          console.log("Result:", updateUserResult);
+      
+          console.log("Calling getAllPosts");
+          const posts = await getAllPosts();
+          console.log("Result:", posts);
+      
+          console.log("Calling updatePost on posts[0]");
+          const updatePostResult = await updatePost(posts[0].id, {
+            title: "New Title",
+            content: "Updated Content"
+          });
+          console.log("Result:", updatePostResult);
+      
+          console.log("Calling getUserById with 1");
+          const albert = await getUserById(1);
+          console.log("Result:", albert);
+      
+          console.log("Finished database tests!");
+        } catch (error) {
+          console.log("Error during testDB");
+          throw error;
+        }
+      }
+      
 
 
 

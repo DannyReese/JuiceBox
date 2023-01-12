@@ -40,7 +40,7 @@ async function dropTables() {
 async function makePostTabel() {
     try {
         console.log('beginning to build post table...')
-        
+
         await client.query(`CREATE TABLE posts(
             id SERIAL PRIMARY KEY,
             "authorId" INTEGER REFERENCES users(id) NOT NULL,

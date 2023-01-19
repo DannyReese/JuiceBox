@@ -67,7 +67,7 @@ usersRouter.post('/register',async(req,res,next)=>{
             
         const jwt = require('jsonwebtoken')
         const token = jwt.sign({
-            id: user.id,
+            id:user.id,
             username,
         },process.env.JWT_SECRET,{
             expiresIn: '1w'
@@ -77,7 +77,7 @@ usersRouter.post('/register',async(req,res,next)=>{
             token
         });
     }catch({name,message}){
-        console.log({name,message})
+      
         next([name,message]);
     }
 })

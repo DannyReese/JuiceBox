@@ -3,13 +3,12 @@ const postsRouter = express.Router();
 const { getAllPosts} = require('../db');
 
 postsRouter.use((req,res,next)=>{
-    console.log('sending a little something from posts');
+    console.log('sending a little something from POSTS');
     next()
 });
 
 postsRouter.get('/',async(req,res)=>{
     const posts = await getAllPosts()
-    console.log(posts)
     res.send(
         {posts}
         );

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express")
 const PORT = 3000
 const server = express()
@@ -6,6 +7,8 @@ const morgan = require('morgan');
 const apiRouter = require('./api');
 
 client.connect();
+
+
 
 server.use(morgan('dev'));
 

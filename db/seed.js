@@ -170,7 +170,6 @@ async function createInitialTags() {
 
 
 
-
 async function rebuildDb() {
     try {
         client.connect();

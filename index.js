@@ -1,6 +1,15 @@
 const express = require("express")
 const PORT = 3000
 const server = express()
+const {client} = require('./db')
+const morgan = require('morgan');
+const apiRouter = require('./api');
+
+client.connect();
+
+server.use(morgan('dev'));
+
+server.use(express.json());
 
 server.use((req,res,next)=>{
     console.log('--Body Logger START--');
@@ -9,15 +18,9 @@ server.use((req,res,next)=>{
     next()
 });
 
-// server.use('/api', (req, res, next) => {
-//     console.log(req ,"A request was made to /api");
-//     next();
-//   });
-  
-//   server.get('/api', (req, res, next) => {
-//     console.log("A get request was made to /api");
-//     res.send({ message: "success" });
-//   });
+server.use('/api', apiRouter);
+
+
 
 server.listen(PORT,()=>{
     console.log(`listening on ${PORT}`);

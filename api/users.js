@@ -5,7 +5,7 @@ const {getAllUser}= require('../db');
 
 usersRouter.use((req,res,next)=>{
     console.log('A request is being made');
-    // res.send({message:"hello from /users!"});
+   
     next();
 });
 

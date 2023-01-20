@@ -18,7 +18,6 @@ const getAllUser = async () => {
     }
 };
 
-
 async function getAllPosts() {
     try {
         const { rows: postIds } = await client.query(`
@@ -34,7 +33,6 @@ async function getAllPosts() {
         throw error;
     }
 };
-
 
 async function getPostsByUser(userId) {
     try {
@@ -57,7 +55,6 @@ async function getPostsByUser(userId) {
     }
 };
 
-
 async function createUser({
     username,
     password,
@@ -77,7 +74,6 @@ async function createUser({
         throw error
     }
 };
-
 
 async function createPost({
     authorId,
@@ -102,8 +98,6 @@ async function createPost({
         throw error;
     }
 };
-
-
 
 async function updateUser(id, fields = {}) {
     const setString = Object.keys(fields).map(

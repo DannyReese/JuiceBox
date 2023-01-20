@@ -29,7 +29,7 @@ async function getAllPosts() {
         const posts = await Promise.all(postIds.map(
             post => getPostById(post.id)
         ));
-      return posts;
+        return posts;
     } catch (error) {
         throw error;
     }
@@ -48,7 +48,7 @@ async function getPostsByUser(userId) {
         const posts = await Promise.all(postIds.map(
             post => getPostById(post.id)
         ));
-        
+
         return posts;
 
     } catch (error) {
@@ -207,11 +207,11 @@ async function createTag(tagList) {
     }
     const insertValue = tagList.map(
         (_, index) => `$${index + 1}`
-        ).join('),(')
+    ).join('),(')
 
     const selectValues = tagList.map(
         (_, index) => `$${index + 1}`
-        ).join(', ');
+    ).join(', ');
     try {
         await client.query(`
         INSERT INTO tags(name)
@@ -228,7 +228,7 @@ async function createTag(tagList) {
         return rows
 
     } catch (error) {
-  
+
         throw error;
     }
 
@@ -243,7 +243,7 @@ async function addTagsToPost(postId, tagList) {
         await Promise.all(createPostTagPromises);
 
         return await getPostById(postId);
-      } catch (error) {
+    } catch (error) {
         throw error;
     }
 };
@@ -315,16 +315,30 @@ async function getPostsByTagName(tagName) {
     }
 };
 
-const getAllTags = async()=>{
-    try{
-        const {rows} = await client.query(`
+const getAllTags = async () => {
+    try {
+        const { rows } = await client.query(`
         SELECT * FROM tags;`
         );
         return rows
-    }catch(error){
+    } catch (error) {
         throw error
     };
 };
+
+async function getUserByUsername(username) {
+    try {
+        const { rows: [user] } = await client.query(`
+        SELECT *
+        FROM users
+        WHERE username=$1;
+      `, [username]);
+
+        return user;
+    } catch (error) {
+        throw error;
+    }
+}
 
 
 module.exports = {
@@ -342,5 +356,6 @@ module.exports = {
     addTagsToPost,
     getPostById,
     getAllTags,
-    getPostsByTagName
+    getPostsByTagName,
+    getUserByUsername
 };

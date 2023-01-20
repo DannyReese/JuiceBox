@@ -47,7 +47,6 @@ apiRouter.use((req,res,next)=>{
 apiRouter.use('/users', usersRouter);
 apiRouter.use('/posts', postsRouter);
 apiRouter.use('/tags', tagsRouter);
-// apiRouter.use('users/login',usersRouter);
 
 apiRouter.use((error,req,res,next)=>{
     res.send({

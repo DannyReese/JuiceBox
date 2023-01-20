@@ -15,4 +15,10 @@ tagsRouter.get('/',async(req,res)=>{
     })
 });
 
+tagsRouter.get('/:tagName/posts',async(req,res,next)=>{
+    const {tagName} = req.params
+    console.log('tags:',tagName);
+   
+})
+
 module.exports=tagsRouter;

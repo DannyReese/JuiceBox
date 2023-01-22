@@ -29,12 +29,6 @@ postsRouter.post('/', requireUser, async (req, res, next) => {
     }
 });
 
-postsRouter.post('/', requireUser, async (req, res, next) => {
-    res.send({
-        message: "under construction"
-    });
-});
-
 postsRouter.use((req, res, next) => {
     console.log("A request is being made to /posts");
 

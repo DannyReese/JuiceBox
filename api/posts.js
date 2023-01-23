@@ -69,7 +69,7 @@ postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
   try {
     const { postId } = req.params
     const post = await getPostById(postId)
-
+    
     if (post && post.author.id === req.user.id) {
       const updatedPost = await updatePost(post.id, { active: false });
       res.send({ post: updatedPost });
@@ -90,10 +90,13 @@ postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
 
 postsRouter.get('/', async (req, res) => {
   const allPosts = await getAllPosts()
+
+  
   const post = allPosts.filter(post => {
-    return post.active || (req.user && post.author.id === req.user.id);
-  })
-console.log(post)
+      return (post.active && post.author.active)||(req.user && post.author.id === req.user.id)
+  });
+
+
   res.send(
     { posts: post }
   );

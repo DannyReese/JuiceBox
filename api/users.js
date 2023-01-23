@@ -1,7 +1,7 @@
 const express = require('express');
 const usersRouter = express.Router();
-const { getAllUser, getUserByUsername, createUser } = require('../db');
-
+const { getAllUser, getUserByUsername, createUser,getUserById, updateUser } = require('../db');
+const {requireUser} = require('./utils')
 
 usersRouter.use((req, res, next) => {
     console.log('A USER request is being made');
@@ -12,6 +12,7 @@ usersRouter.use((req, res, next) => {
 
 usersRouter.get('/', async (req, res) => {
     const users = await getAllUser()
+    console.log(users)
     res.send({
         users
     });
@@ -19,8 +20,8 @@ usersRouter.get('/', async (req, res) => {
 
 
 usersRouter.post('/login', async (req, res, next) => {
-    const { username, password } = req.body;
-    if (!username || !password) {
+    const { username, password} = req.body;
+    if (!username || !password){
         next({
             name: "MissingCredentialsError",
             message: "Please supply both username and password"
@@ -81,6 +82,29 @@ usersRouter.post('/register',async(req,res,next)=>{
         next([name,message]);
     }
 })
+
+usersRouter.delete('/:userId', requireUser, async (req, res, next) => {
+    try {
+      const { userId } = req.params
+      const user = await getUserById(userId)
+  
+      if (user && user.id === req.user.id) {
+        const updatedUser = await updateUser(user.id, { active: false });
+        res.send({ userInactive: updatedUser });
+      } else {
+        next(user ? {
+          name: "UnauthorizedUserError",
+          message: "You cannot deactivate an account that is not yours"
+        } : {
+          name: "UserNotFoundError",
+          message: "That User does not exist"
+        })
+      }
+    } catch ({ name, message }) {
+      next({ name, message });
+    }
+  });
+  
 
 
 module.exports = usersRouter;
